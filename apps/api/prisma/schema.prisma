@@ -1,0 +1,56 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  TECHNICIAN
+  SUPERVISOR
+}
+
+enum ServiceType {
+  INSTALLATION
+  MAINTENANCE
+  REPAIR
+  INSPECTION
+}
+
+enum ReportStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(TECHNICIAN)
+  reports      Report[]
+}
+
+model Report {
+  id              String       @id @default(uuid())
+  // Lo genera el cliente: permite reintentar el envío sin duplicar.
+  clientId        String       @unique
+  technicianId    String
+  technician      User         @relation(fields: [technicianId], references: [id])
+  customerName    String
+  serviceType     ServiceType
+  description     String
+  status          ReportStatus @default(OPEN)
+  latitude        Float?
+  longitude       Float?
+  // Hora real de captura, aunque se haya levantado sin red.
+  createdAtClient DateTime
+  syncedAt        DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([technicianId, createdAtClient])
+}

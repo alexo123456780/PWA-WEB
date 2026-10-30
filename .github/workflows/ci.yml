@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, develop]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:shared
+      - run: npm run build -w @fieldreport/api
+      - run: npm run build -w @fieldreport/web # incluye el chequeo de tipos de la web y del SW
+      - run: npm test -w @fieldreport/web
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Entorno
+        run: |
+          cp .env.example .env
+          echo "HOST_UID=$(id -u)" >> .env
+          echo "HOST_GID=$(id -g)" >> .env
+      - name: Pruebas de la API (contra PostgreSQL real)
+        run: |
+          docker compose up -d --build --wait api
+          docker compose exec -T api npm test
+          docker compose down -v
+      - name: Levantar producción local (nginx + API)
+        run: docker compose -f docker-compose.prod.yml up -d --build --wait
+      - name: E2E de PWA, offline y sincronización
+        working-directory: apps/web
+        run: |
+          npx playwright install --with-deps chromium
+          BASE_URL=http://localhost:8080 npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/test-results
+
+  # Despliegue continuo de la web: solo en master, solo si pasaron las pruebas y solo si el
+  # repositorio tiene los secretos de Vercel (Settings → Secrets and variables → Actions):
+  # VERCEL_TOKEN, VERCEL_ORG_ID y VERCEL_PROJECT_ID. La API se redespliega sola desde Render.
+  deploy-web:
+    needs: [checks, e2e]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comprobar secretos
+        id: secrets
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::notice::Faltan los secretos de Vercel; se omite el despliegue."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          node-version: 22
+      - name: Desplegar a producción
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          npx --yes vercel@65.8.0 pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx --yes vercel@65.8.0 build --prod --token="$VERCEL_TOKEN"
+          npx --yes vercel@65.8.0 deploy --prebuilt --prod --token="$VERCEL_TOKEN"

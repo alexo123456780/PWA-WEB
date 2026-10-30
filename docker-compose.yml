@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile, target: dev }
+    # Con tu usuario, para que lo que escribe el bind mount no quede como root.
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    env_file: .env
+    environment:
+      HOME: /tmp
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+    ports: ["3000:3000"]
+    volumes: ["./apps/api:/app/apps/api", "/app/node_modules"]
+    depends_on: { db: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/v1/health"]
+      interval: 5s
+      retries: 20
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile, target: dev }
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      HOME: /tmp
+      API_PROXY_TARGET: http://api:3000
+    ports: ["5173:5173"]
+    volumes: ["./apps/web:/app/apps/web", "/app/node_modules"]
+    depends_on: { api: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5173/"]
+      interval: 5s
+      retries: 20
+
+  tunnel:
+    image: ngrok/ngrok:latest
+    profiles: ["tunnel"]
+    command: http web:5173
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports: ["4040:4040"]
+    depends_on: [web]
+
+volumes:
+  pgdata:

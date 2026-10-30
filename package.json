@@ -1,0 +1,13 @@
+{
+  "name": "fieldreport",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "build:shared": "npm run build -w @fieldreport/shared",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

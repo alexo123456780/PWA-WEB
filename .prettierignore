@@ -1,0 +1,4 @@
+doc
+package-lock.json
+dist
+apps/api/src/generated

@@ -1,6 +1,6 @@
 # FieldReport PWA
 
-**Producción: https://pwa-web-dun.vercel.app**
+**Producción: https://pwa-web-dun.vercel.app** · API: https://fieldreport-api.onrender.com/api/docs
 
 PWA para que técnicos en campo levanten reportes de servicio **sin internet**, desde cualquier smartphone (iOS o Android), y se sincronicen solos al recuperar señal. Proyecto Integrador: *Fundamentos y escenarios de uso de las aplicaciones web progresivas*.
 

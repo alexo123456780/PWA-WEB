@@ -12,6 +12,7 @@ Un documento por avance, en orden. Estado contra el PRD al 2026-10-29. Leyenda: 
 | 06 | [Seguridad, auditoría Lighthouse y entorno limpio](06-seguridad-auditoria-y-entorno-limpio.md) |
 | 07 | [Repositorio, CI/CD y configuración de despliegue](07-despliegue-y-cicd.md) |
 | 08 | [Web desplegada en Vercel](08-web-desplegada-en-vercel.md) — https://pwa-web-dun.vercel.app |
+| 09 | [API en Render y conexión con la web](09-api-en-render-y-conexion.md) — https://fieldreport-api.onrender.com |
 
 ## Criterios de aceptación (PRD, sección 13)
 
@@ -21,7 +22,7 @@ Un documento por avance, en orden. Estado contra el PRD al 2026-10-29. Leyenda: 
 | Modo avión: abre, lista, crea y edita sin errores | 🟡 | E2E con red cortada en Chromium; falta probarlo en teléfono |
 | Al volver la red, sincroniza sin duplicados | ✅ | E2E: 3 reportes, ≤ 10 s, `clientId` únicos; corte a mitad de envío; carrera concurrente en la API |
 | Evidencia PWA (Lighthouse 11, Application, PWABuilder) | 🟡 | Lighthouse 11 = 100 % también sobre la URL pública; faltan PWABuilder y capturas de *Application* (manuales) |
-| Despliegue público HTTPS + repo GitHub con README | 🟡 | Web en https://pwa-web-dun.vercel.app (CI en verde, despliegue automático desde `master`) y repo público con README; falta la API en Render (ver avance 08) |
+| Despliegue público HTTPS + repo GitHub con README | 🟡 | Web (Vercel) y API (Render) en producción y conectadas; CI en verde; repo público con README. Falta correr login/sincronización E2E contra producción (necesita la contraseña demo) |
 | `docker compose up` en una máquina limpia | ✅ | Verificado desde un clon sin `node_modules` ni `.env`: 55 s |
 | Documento de arquitectura, tabla de compatibilidad y checklist | ✅ | PRD secciones 6 y 7; checklist de instalación actualizado en el avance 03 |
 

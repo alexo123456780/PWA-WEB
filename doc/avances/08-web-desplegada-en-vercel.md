@@ -43,3 +43,5 @@ Los 2 que **fallan son esperados** y no son un defecto: necesitan la API, que to
 2. Con la URL de Render: añadir a `vercel.json` la reescritura `/api/:path*` → `https://<servicio>.onrender.com/api/:path*`, esperar el redespliegue y correr el E2E completo (login, offline, sincronización) contra `https://pwa-web-dun.vercel.app`.
 3. PWABuilder, securityheaders.com y capturas del panel *Application*.
 4. Pruebas en Android e iPhone reales; después, fotos y firma (RF-03, RF-04) si queda tiempo.
+
+> Actualización (avance 10): PWABuilder, las capturas del panel *Application* y una alternativa a securityheaders.com (Observatorio de Mozilla, A+) ya están hechos; ver `10-evidencia-pwabuilder-devtools-y-manifest.md`.

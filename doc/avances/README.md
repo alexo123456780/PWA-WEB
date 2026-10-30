@@ -13,6 +13,7 @@ Un documento por avance, en orden. Estado contra el PRD al 2026-10-29. Leyenda: 
 | 07 | [Repositorio, CI/CD y configuración de despliegue](07-despliegue-y-cicd.md) |
 | 08 | [Web desplegada en Vercel](08-web-desplegada-en-vercel.md) — https://pwa-web-dun.vercel.app |
 | 09 | [API en Render y conexión con la web](09-api-en-render-y-conexion.md) — https://fieldreport-api.onrender.com |
+| 10 | [Evidencia de PWABuilder y DevTools, y arreglos del manifest](10-evidencia-pwabuilder-devtools-y-manifest.md) |
 
 ## Criterios de aceptación (PRD, sección 13)
 
@@ -21,7 +22,7 @@ Un documento por avance, en orden. Estado contra el PRD al 2026-10-29. Leyenda: 
 | Se instala en Chrome Android y Safari iOS y abre `standalone` | ⬜ | Chrome confirma instalabilidad sin errores (headless); falta el dispositivo real |
 | Modo avión: abre, lista, crea y edita sin errores | 🟡 | E2E con red cortada en Chromium; falta probarlo en teléfono |
 | Al volver la red, sincroniza sin duplicados | ✅ | E2E: 3 reportes, ≤ 10 s, `clientId` únicos; corte a mitad de envío; carrera concurrente en la API |
-| Evidencia PWA (Lighthouse 11, Application, PWABuilder) | 🟡 | Lighthouse 11 = 100 % también sobre la URL pública; faltan PWABuilder y capturas de *Application* (manuales) |
+| Evidencia PWA (Lighthouse 11, Application, PWABuilder) | ✅ | Lighthouse 11 = 100 %, capturas de *Application* (Manifest sin advertencias, SW activo, cachés, IndexedDB) y PWABuilder 0 errores / 0 avisos, todo sobre producción (avance 10) |
 | Despliegue público HTTPS + repo GitHub con README | 🟡 | Web (Vercel) y API (Render) en producción y conectadas; CI en verde; repo público con README. Falta correr login/sincronización E2E contra producción (necesita la contraseña demo) |
 | `docker compose up` en una máquina limpia | ✅ | Verificado desde un clon sin `node_modules` ni `.env`: 55 s |
 | Documento de arquitectura, tabla de compatibilidad y checklist | ✅ | PRD secciones 6 y 7; checklist de instalación actualizado en el avance 03 |

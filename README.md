@@ -63,7 +63,7 @@ E2E (Chromium real: instalabilidad, offline, sincronización, Background Sync, c
 ```bash
 docker compose -f docker-compose.prod.yml up -d --build --wait
 docker run --rm --network host --ipc=host -v "$PWD":/work -w /work/apps/web \
-  --user "$(id -u):$(id -g)" -e HOME=/tmp -e BASE_URL=http://localhost:8080 \
+  --user "$(id -u):$(id -g)" -e HOME=/tmp -e BASE_URL=http://localhost:8080 -e SPA_FALLBACK=1 \
   mcr.microsoft.com/playwright:v1.64.1-noble npx playwright test
 ```
 

@@ -20,15 +20,28 @@ test('cabeceras de caché y tipo del manifest', async ({ request }) => {
   );
 });
 
-test('el proxy /api llega a la API y las rutas de la SPA caen en index.html', async ({
-  request,
-}) => {
+test('el proxy /api llega a la API', async ({ request }) => {
   expect(await (await request.get('/api/v1/health')).json()).toEqual({
     status: 'ok',
   });
+});
+
+// Solo nginx hace fallback a index.html. En Vercel no se hace a propósito: una ruta inexistente
+// debe dar 404 y no un 200 con HTML (soft 404), que confunde a PWABuilder y a Lighthouse.
+test('nginx: las rutas desconocidas caen en index.html', async ({
+  request,
+}) => {
+  test.skip(!process.env.SPA_FALLBACK, 'solo aplica al contenedor nginx');
   const spa = await request.get('/ruta/inexistente');
   expect(spa.status()).toBe(200);
   expect(await spa.text()).toContain('<div id="root">');
+});
+
+test('una ruta inexistente responde 404 y no un 200 con HTML', async ({
+  request,
+}) => {
+  test.skip(!!process.env.SPA_FALLBACK, 'nginx hace fallback a propósito');
+  expect((await request.get('/service-worker.js')).status()).toBe(404);
 });
 
 test('cabeceras de seguridad (RNF-04)', async ({ request }) => {

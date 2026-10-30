@@ -8,10 +8,6 @@
     {
       "source": "/api/:path*",
       "destination": "https://fieldreport-api.onrender.com/api/:path*"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
     }
   ],
   "headers": [

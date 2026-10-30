@@ -45,7 +45,7 @@ jobs:
         working-directory: apps/web
         run: |
           npx playwright install --with-deps chromium
-          BASE_URL=http://localhost:8080 npx playwright test
+          SPA_FALLBACK=1 BASE_URL=http://localhost:8080 npx playwright test
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

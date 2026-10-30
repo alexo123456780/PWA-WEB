@@ -38,6 +38,17 @@ test('el manifest tiene los campos y íconos exigidos', async ({ request }) => {
   for (const icon of manifest.icons) {
     expect((await request.get(`/${icon.src}`)).status()).toBe(200);
   }
+
+  // Sin capturas (móvil y escritorio) Chrome avisa de que no habrá interfaz de instalación enriquecida.
+  const factors = manifest.screenshots.map(
+    (s: { form_factor: string }) => s.form_factor,
+  );
+  expect(factors).toEqual(expect.arrayContaining(['narrow', 'wide']));
+  for (const shot of manifest.screenshots) {
+    const res = await request.get(`/${shot.src}`);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toBe('image/png');
+  }
 });
 
 test('abre sin conexión después de la primera visita', async ({

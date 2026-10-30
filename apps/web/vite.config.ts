@@ -18,6 +18,8 @@ export default defineConfig({
       registerType: 'prompt',
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+        // Solo las usa el diálogo de instalación (con red): no hace falta tenerlas offline.
+        globIgnores: ['screenshots/**'],
       },
       devOptions: { enabled: true, type: 'module' },
       manifest: {
@@ -32,6 +34,32 @@ export default defineConfig({
         orientation: 'portrait',
         theme_color: THEME,
         background_color: '#f8fafc',
+        categories: ['business', 'productivity'],
+        // Chrome pide al menos una captura "narrow" (móvil) y una "wide" (escritorio) para
+        // mostrar la interfaz de instalación enriquecida.
+        screenshots: [
+          {
+            src: 'screenshots/lista-movil.png',
+            sizes: '390x844',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Reportes guardados sin conexión, pendientes de sincronizar',
+          },
+          {
+            src: 'screenshots/formulario-movil.png',
+            sizes: '390x844',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Formulario de reporte de servicio',
+          },
+          {
+            src: 'screenshots/lista-escritorio.png',
+            sizes: '1280x720',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Listado de reportes con su estado de sincronización',
+          },
+        ],
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },

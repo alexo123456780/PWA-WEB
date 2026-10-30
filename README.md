@@ -78,9 +78,11 @@ npx lighthouse@latest http://localhost:8080 --view                       # rendi
 
 ## Despliegue
 
-- **Web** (Vercel o Netlify, HTTPS automático): directorio `apps/web`, build `npm run build`, salida `dist`. Aplica las mismas cabeceras que `apps/web/nginx.conf` (`sw.js` y `index.html` sin caché, manifest como `application/manifest+json`, CSP).
-- **API + PostgreSQL** (Render, Railway o Fly.io): imagen `apps/api/Dockerfile`, target `prod`. Variables solo en el panel del proveedor: `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN`, `DEMO_EMAIL`, `DEMO_PASSWORD`.
-- Si la API queda en otro origen, la web se compila con `VITE_API_URL=https://<api>/api/v1`, `CORS_ORIGIN` debe incluir el origen de la web y la CSP necesita ese origen en `connect-src`.
+Detalle y estado en [`doc/avances/07-despliegue-y-cicd.md`](doc/avances/07-despliegue-y-cicd.md).
+
+- **Web** (Vercel): `vercel.json` ya trae los comandos y las cabeceras (CSP, caché del SW, manifest). El job `deploy-web` de `.github/workflows/ci.yml` despliega desde `master` cuando existen los secretos `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`; también se puede enlazar el repo desde Vercel.
+- **API + PostgreSQL** (Render): *New → Blueprint* sobre este repo (`render.yaml`). Pide `DEMO_EMAIL`, `DEMO_PASSWORD` y `CORS_ORIGIN`; `JWT_SECRET` lo genera Render. La imagen `prod` de `apps/api/Dockerfile` también corre en Railway o Fly.
+- La web llama a la API en el mismo origen (`/api/v1`). En Vercel eso se logra con una reescritura en `vercel.json` hacia la URL de Render (`/api/:path*`); sin ella, o si prefieres otro origen, compila con `VITE_API_URL=https://<api>/api/v1`, incluye ese origen en `CORS_ORIGIN` y en `connect-src` de la CSP.
 
 ## Limitaciones conocidas
 

@@ -6,7 +6,7 @@ Fecha: 2026-10-29 · Cronograma PRD: S2 · D5 (parcial) · Entregable final: rep
 
 - **Commits convencionales** (4, con tema claro) y **push de `develop`** a `TOKYOMAN-ORG/PROYECTO_WEB`. La rama por defecto del remoto es `master`; no se tocó (ver "Pendiente").
 - **CI (`.github/workflows/ci.yml`)**: `checks` (instalar, build de `shared`, API y web con chequeo de tipos del SW, pruebas unitarias) y `e2e` (pruebas de la API contra PostgreSQL, producción local con Docker y Playwright en Chromium).
-- **CD de la web (`deploy-web`, mismo workflow)**: solo en `push` a `master`, solo si `checks` y `e2e` pasaron y solo si el repositorio tiene los secretos `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`. Sin ellos escribe un aviso y se omite, en vez de fallar. Usa el CLI de Vercel fijado en 65.8.0 (`pull` → `build --prod` → `deploy --prebuilt --prod`).
+- **CD de la web**: lo hace la integración Git de Vercel (ver abajo); el workflow solo se encarga del CI. Un job de despliegue con secretos y el CLI se descartó por redundante.
 - **`vercel.json`** (raíz): comandos de instalación y build del monorepo, salida `apps/web/dist` y las mismas cabeceras que `nginx.conf` (CSP, HSTS, `sw.js`/`index.html`/`offline.html` sin caché, manifest como `application/manifest+json`, `/assets/*` immutable).
 - **`render.yaml`** (Blueprint): API con la imagen `prod` de `apps/api/Dockerfile`, PostgreSQL, `JWT_SECRET` generado por Render, healthcheck en `/api/v1/health` y redespliegue con cada commit. `DEMO_EMAIL`, `DEMO_PASSWORD` y `CORS_ORIGIN` se piden al crear el Blueprint y no se guardan en el repo.
 

@@ -1,5 +1,7 @@
 # FieldReport PWA
 
+**Producción: https://pwa-web-dun.vercel.app**
+
 PWA para que técnicos en campo levanten reportes de servicio **sin internet**, desde cualquier smartphone (iOS o Android), y se sincronicen solos al recuperar señal. Proyecto Integrador: *Fundamentos y escenarios de uso de las aplicaciones web progresivas*.
 
 - Requerimientos y decisiones: [`doc/PRD – FieldReport PWA (Proyecto Integrador).md`](doc/PRD%20–%20FieldReport%20PWA%20(Proyecto%20Integrador).md)

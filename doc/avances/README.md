@@ -14,6 +14,7 @@ Un documento por avance, en orden. Estado contra el PRD al 2026-10-29. Leyenda: 
 | 08 | [Web desplegada en Vercel](08-web-desplegada-en-vercel.md) — https://pwa-web-dun.vercel.app |
 | 09 | [API en Render y conexión con la web](09-api-en-render-y-conexion.md) — https://fieldreport-api.onrender.com |
 | 10 | [Evidencia de PWABuilder y DevTools, y arreglos del manifest](10-evidencia-pwabuilder-devtools-y-manifest.md) |
+| 11 | [Estado de red real, mensajes de validación y documento de arquitectura](11-estado-de-red-real-mensajes-y-documento-de-arquitectura.md) · [Arquitectura](../arquitectura.md) |
 
 ## Criterios de aceptación (PRD, sección 13)
 

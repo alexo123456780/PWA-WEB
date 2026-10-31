@@ -10,6 +10,16 @@ export const REPORT_STATUSES = ['OPEN', 'IN_PROGRESS', 'DONE'] as const;
 // Estado de sincronización: solo existe en el cliente (IndexedDB).
 export const SYNC_STATES = ['pending', 'syncing', 'synced', 'error'] as const;
 
+// Mensajes propios: los de Zod salen en inglés y con símbolos (">=-90").
+const coordinate = (name: string, limit: number) => {
+  const range = `La ${name} debe estar entre -${limit} y ${limit}`;
+  return z
+    .number({ error: `Escribe la ${name} como número` })
+    .min(-limit, range)
+    .max(limit, range)
+    .nullish();
+};
+
 // Lo que captura el técnico en el formulario; la API lo valida con las mismas reglas.
 export const reportFormSchema = z.object({
   customerName: z
@@ -24,8 +34,8 @@ export const reportFormSchema = z.object({
     .min(5, 'Describe el trabajo realizado (mínimo 5 caracteres)')
     .max(2000, 'Máximo 2000 caracteres'),
   status: z.enum(REPORT_STATUSES),
-  latitude: z.number().min(-90).max(90).nullish(),
-  longitude: z.number().min(-180).max(180).nullish(),
+  latitude: coordinate('latitud', 90),
+  longitude: coordinate('longitud', 180),
 });
 
 export const reportInputSchema = reportFormSchema.extend({

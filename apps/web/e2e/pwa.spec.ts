@@ -66,6 +66,22 @@ test('abre sin conexión después de la primera visita', async ({
   ).toBeVisible();
 });
 
+test.describe('Wi-Fi sin salida a internet', () => {
+  // Sin SW para que el corte del health lo vea Playwright.
+  test.use({ serviceWorkers: 'block' });
+
+  test('la etiqueta dice Sin conexión aunque navigator.onLine sea true', async ({
+    page,
+  }) => {
+    await page.route('**/api/v1/health', (route) => route.abort());
+    await page.goto('/');
+    expect(await page.evaluate(() => navigator.onLine)).toBe(true);
+    await expect(
+      page.getByRole('status').filter({ hasText: 'Sin conexión' }),
+    ).toBeVisible();
+  });
+});
+
 test('una ruta fuera de la SPA sin red responde /offline.html', async ({
   page,
   context,
